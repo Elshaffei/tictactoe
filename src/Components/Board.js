@@ -24,6 +24,9 @@ function calculateWinner(square) {
 
 
 const Board = () => {
+
+  //creating a state variable to remember previous moves
+  const [history, setHistory] = useState([Array(9).fill(null)])
   
   // Creating a state variable to hold the values of the board
   const[square, setSquare] = useState(Array(9).fill(null))
@@ -38,7 +41,13 @@ const Board = () => {
     Status = "Winner: " + winner;
   } else
     Status = "Next player : " + (xIsNext? 'X' : 'O');
+
+
+  ////////////////////////
+  //Event handler//
+  //////////////////////
   
+
   function handleClick(i) {
     //checks if the square already contains an element and short cirucits if it does! 
     if (square[i] || calculateWinner(square)){
@@ -59,17 +68,37 @@ const Board = () => {
     //Flipping the sign for the next move
     setxIsNext(!xIsNext) 
 
+    //updating the history state variable which holds
+    //history moves of the game. 
+    const newCopy = [...history, newSquare]
+    setHistory(newCopy)
+
     
   }
 
-
- 
     
+  let moves; 
+ 
+  function figuringMoves (history) {
+    if (history.length === 1) {  
+      moves = 'Go to game start'
+    } else 
+      moves = 'Go to move #' + (history.length - 1);
+  }
+  
+  figuringMoves (history)
+  
+
   return (
     
     <div>
           <div>{Status}</div>
-           <div className="board-row">
+          <div>
+            <button>
+            {moves}
+            </button>
+          </div>
+          <div className="board-row">
                     <BoardCell  value={square[0]} onSquareClick={() => {handleClick(0)}} />
                     <BoardCell  value={square[1]} onSquareClick={() => {handleClick(1)}} />
                     <BoardCell  value={square[2]} onSquareClick={() => {handleClick(2)}} />
